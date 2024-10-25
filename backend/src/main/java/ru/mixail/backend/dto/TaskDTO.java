@@ -1,4 +1,4 @@
 package ru.mixail.backend.dto;
 
-public class TuskDTO {
+public class TaskDTO {
 }

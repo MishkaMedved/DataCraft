@@ -1,4 +1,4 @@
 package ru.mixail.backend.repositories;
 
-public interface TuskRepositries {
+public interface TaskRepositries {
 }
