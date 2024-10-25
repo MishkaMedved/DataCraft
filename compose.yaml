@@ -1,0 +1,18 @@
+services:
+  diagram_service:
+    image: ./diagram_service
+    ports:
+      - "5000:5000"
+    volumes:
+      - diagram_images_storage:/etc/data
+
+  database:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+  diagram_images_storage:
