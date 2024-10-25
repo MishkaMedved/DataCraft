@@ -17,7 +17,7 @@ public class Report {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     @Column(name = "name")
     private String name;
     @Column(name = "status")
