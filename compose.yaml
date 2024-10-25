@@ -1,4 +1,11 @@
 services:
+  backend:
+    image: ./backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - db-data:/etc/data
+
   diagram_service:
     image: ./diagram_service
     ports:
