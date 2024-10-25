@@ -23,7 +23,7 @@ class DataForCreatingLineDiagram(DataForCreatingDiagram):
 
 app = FastAPI()
 
-app.get("/")
+app.post("/")
 def get_diagram_image(data: DataForCreatingDiagram):
     match type(data):
         case DataForCreatingCircleDiagram:
