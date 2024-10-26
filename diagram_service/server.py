@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from pydantic import BaseModel
 import numpy as np
 
+import json
+
 class Report(BaseModel):
     id: int
     name: str
@@ -30,29 +32,35 @@ class DataForCreatingLineDiagram(DataForCreatingDiagram):
 
 app = FastAPI()
 
-@app.post("/upload/{id}")
-def upload_data(id: int, json_data):
-    
+@app.post("/{}")
+def create_diagram(json_data, critery, diagram_type):
+    data = json.load(json_data)
 
-@app.post("/")
-def get_diagram_image(report: Report):
-    return {"filename": f"{str(data.id)}.png"}
+    diagram_data = list()
 
-def generate_circle_diagram(report: Report):
+    for report in data:
+        for k, v in report:
+            if k==critery:
+                diagram_data.append(v)
+
+    if diagram_type=="pie":
+        generate_circle_diagram()
+
+def generate_circle_diagram(title, labels, sizes):
     
     fig, ax = plt.subplots()
-    ax.pie(data.sizes, labels=data.labels)
-    plt.title(data.title)
+    ax.pie(sizes, labels=labels)
+    plt.title(title)
     plt.savefig(f"{str(data.id)}.png")
 
-def generate_bar_diagram(report: Report):
-    plt.bar(data.labels, data.counts)
-    plt.title(data.title)
+def generate_bar_diagram(title, labels, sizes):
+    plt.bar(labels, sizes)
+    plt.title(title)
     plt.savefig(f"{str(data.id)}.png")
 
-def generate_line_diagram(report: Report):
-    plt.plot(data.x_array, data.y_array)
-    plt.xlabel(data.x_title)
-    plt.ylabel(data.y_title)
-    plt.title(data.title)
+def generate_line_diagram(title, x_array, y_array, x_title, y_title):
+    plt.plot(x_array, y_array)
+    plt.xlabel(x_title)
+    plt.ylabel(y_title)
+    plt.title(title)
     plt.savefig(f"{str(data.id)}.png")
