@@ -34,4 +34,51 @@ public class MainController {
         }
     }
 
+    @PostMapping("/reports")
+    public ResponseEntity<?> addReport(@RequestBody Report report) {
+        try {
+            reportService.save(report);
+            return ResponseEntity.status(HttpStatus.CREATED).body().build();
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body().("Ошибка сохранения отчета");
+        }
+    }
+
+    @PutMapping("/reports/{id}")
+    public ResponseEntity<?> updateReport(@RequestBody Report report, @PathVariable Long id) {
+        try{
+            reportService.update(report);
+            return ResponseEntity.status(HttpStatus.OK).body().build();
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body().("Ошибка изменения отчета");
+        }
+    }
+
+    @DeleteMapping("/reports/{id}")
+    public ResponseEntity<?> deleteReport(@PathVariable Long id) {
+        try{
+            reportService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).body().build();
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body().("Ошибка изменения отчета");
+        }
+    }
+
+    @GetMapping("/reports/exports")
+    public ResponseEntity<?> exportReports(@PathVariable Long id, @RequestParam("format") String format) {
+        try {
+            if (format.equals("pptx")) {
+                return reportService.exportToPPTX(reportService.findById(id));
+            } else if (format.equals("pdf")) {
+                return reportService.exportToPDF(reportService.findById(id));
+            } else if (format.equals("docx")) {
+                return reportService.exportToDOCX(reportService.findById(id));
+            } else {
+                return ResponseEntity.badRequest().body("Неподдерживаемый формат экспорта");
+            }
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка экспорта отчета");
+        }
+    }
+
 }
