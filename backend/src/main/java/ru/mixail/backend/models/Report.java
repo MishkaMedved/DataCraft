@@ -26,4 +26,6 @@ public class Report {
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+    @Column(name = "is_favorite")
+    private boolean isFavorite;
 }

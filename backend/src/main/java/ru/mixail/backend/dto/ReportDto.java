@@ -14,4 +14,5 @@ public class ReportDto {
     StatusEnum status;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
+    boolean isFavorite;
 }
