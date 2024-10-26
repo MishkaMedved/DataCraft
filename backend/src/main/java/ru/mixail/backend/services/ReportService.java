@@ -66,4 +66,16 @@ public class ReportService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка обработки JSON файла.");
         }
     }
+
+    private ResponseEntity<?> exportToPPTX(Report report) {
+
+    }
+
+    private ResponseEntity<?> exportToPDF(Report report) {
+
+    }
+
+    private ResponseEntity<?> exportToDOCX(Report report) {
+
+    }
 }
