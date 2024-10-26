@@ -40,7 +40,13 @@ public class ReportService {
 
     @Transactional
     public void update(Report report) {
+        Report originalReport = reportRepository.findById(report.getId()).orElseThrow();
+        originalReport.setName(report.getName());
+        originalReport.setStatus(report.getStatus());
+        originalReport.setUpdatedAt(report.getUpdatedAt());
+        originalReport.setFavorite(report.isFavorite());
 
+        reportRepository.save(originalReport);
     }
 
     @Transactional
