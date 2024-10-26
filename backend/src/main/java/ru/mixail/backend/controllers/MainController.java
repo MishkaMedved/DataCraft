@@ -65,20 +65,20 @@ public class MainController {
         }
     }
 
-    @GetMapping("/reports/exports")
-    public ResponseEntity<?> exportReports(@PathVariable Integer id, @RequestParam("format") String format) {
-        try {
-            if (format.equals("pptx")) {
-                return reportService.exportToPPTX(reportService.findOne(id));
-            } else if (format.equals("pdf")) {
-                return reportService.exportToPDF(reportService.findOne(id));
-            } else if (format.equals("docx")) {
-                return reportService.exportToDOCX(reportService.findOne(id));
-            } else {
-                return ResponseEntity.badRequest().body("Неподдерживаемый формат экспорта");
-            }
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка экспорта отчета");
-        }
-    }
+//    @GetMapping("/reports/exports")
+//    public ResponseEntity<?> exportReports(@PathVariable Integer id, @RequestParam("format") String format) {
+//        try {
+//            if (format.equals("pptx")) {
+//                return reportService.exportToPPTX(reportService.findOne(id));
+//            } else if (format.equals("pdf")) {
+//                return reportService.exportToPDF(reportService.findOne(id));
+//            } else if (format.equals("docx")) {
+//                return reportService.exportToDOCX(reportService.findOne(id));
+//            } else {
+//                return ResponseEntity.badRequest().body("Неподдерживаемый формат экспорта");
+//            }
+//        } catch (Exception e){
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка экспорта отчета");
+//        }
+//    }
 }

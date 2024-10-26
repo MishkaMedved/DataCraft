@@ -21,6 +21,7 @@ public class Report {
     @Column(name = "name")
     private String name;
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private StatusEnum status;
     @Column(name = "created_at")
     private LocalDateTime createdAt;

@@ -81,16 +81,16 @@ public class ReportService {
         }
     }
 
-    public ResponseEntity<?> exportToPPTX(Report report) {
-
-    }
-
-    public ResponseEntity<?> exportToPDF(Report report) {
-
-    }
-
-    public ResponseEntity<?> exportToDOCX(Report report) {
-
-    }
+//    public ResponseEntity<?> exportToPPTX(Report report) {
+//
+//    }
+//
+//    public ResponseEntity<?> exportToPDF(Report report) {
+//
+//    }
+//
+//    public ResponseEntity<?> exportToDOCX(Report report) {
+//
+//    }
 
 }
