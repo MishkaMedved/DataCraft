@@ -39,7 +39,7 @@ public class ReportService {
     }
 
     @Transactional
-    public void update(Object report) {
+    public void update(Report report) {
 
     }
 
