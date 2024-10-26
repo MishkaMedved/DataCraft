@@ -33,6 +33,20 @@ public class ReportService {
         return report.get();
     }
 
+    @Transactional
+    public void save(Report report) {
+        reportRepository.save(report);
+    }
+
+    @Transactional
+    public void update(Object report) {
+
+    }
+
+    @Transactional
+    public void delete(Long id) {
+    }
+
     public ResponseEntity<?> processCsv(MultipartFile file) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             List<Map<String, String>> records = new ArrayList<>();
@@ -67,15 +81,16 @@ public class ReportService {
         }
     }
 
-    private ResponseEntity<?> exportToPPTX(Report report) {
+    public ResponseEntity<?> exportToPPTX(Report report) {
 
     }
 
-    private ResponseEntity<?> exportToPDF(Report report) {
+    public ResponseEntity<?> exportToPDF(Report report) {
 
     }
 
-    private ResponseEntity<?> exportToDOCX(Report report) {
+    public ResponseEntity<?> exportToDOCX(Report report) {
 
     }
+
 }

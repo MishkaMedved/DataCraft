@@ -1,6 +1,7 @@
 package ru.mixail.backend.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,11 +69,11 @@ public class MainController {
     public ResponseEntity<?> exportReports(@PathVariable Long id, @RequestParam("format") String format) {
         try {
             if (format.equals("pptx")) {
-                return reportService.exportToPPTX(reportService.findById(id));
+                return reportService.exportToPPTX(reportService.findOne(id));
             } else if (format.equals("pdf")) {
-                return reportService.exportToPDF(reportService.findById(id));
+                return reportService.exportToPDF(reportService.findOne(id));
             } else if (format.equals("docx")) {
-                return reportService.exportToDOCX(reportService.findById(id));
+                return reportService.exportToDOCX(reportService.findOne(id));
             } else {
                 return ResponseEntity.badRequest().body("Неподдерживаемый формат экспорта");
             }
@@ -80,5 +81,4 @@ public class MainController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка экспорта отчета");
         }
     }
-
 }
