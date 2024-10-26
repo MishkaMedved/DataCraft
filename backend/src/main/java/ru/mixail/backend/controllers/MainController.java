@@ -39,19 +39,19 @@ public class MainController {
     public ResponseEntity<?> addReport(@RequestBody Report report) {
         try {
             reportService.save(report);
-            return ResponseEntity.status(HttpStatus.CREATED).body().build();
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body().("Ошибка сохранения отчета");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка сохранения отчета");
         }
     }
 
     @PutMapping("/reports/{id}")
-    public ResponseEntity<?> updateReport(@RequestBody Report report, @PathVariable Long id) {
+    public ResponseEntity<?> updateReport(@RequestBody Report report, @PathVariable Integer id) {
         try{
             reportService.update(report);
-            return ResponseEntity.status(HttpStatus.OK).body().build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body().("Ошибка изменения отчета");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка изменения отчета");
         }
     }
 
@@ -59,14 +59,14 @@ public class MainController {
     public ResponseEntity<?> deleteReport(@PathVariable Long id) {
         try{
             reportService.delete(id);
-            return ResponseEntity.status(HttpStatus.OK).body().build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body().("Ошибка изменения отчета");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка изменения отчета");
         }
     }
 
     @GetMapping("/reports/exports")
-    public ResponseEntity<?> exportReports(@PathVariable Long id, @RequestParam("format") String format) {
+    public ResponseEntity<?> exportReports(@PathVariable Integer id, @RequestParam("format") String format) {
         try {
             if (format.equals("pptx")) {
                 return reportService.exportToPPTX(reportService.findOne(id));
