@@ -40,11 +40,17 @@ public class ReportService {
 
     @Transactional
     public void update(Report report) {
+        Report originalReport = reportRepository.findById(report.getId()).orElseThrow();
+        originalReport.setName(report.getName());
+        originalReport.setStatus(report.getStatus());
+        originalReport.setUpdatedAt(report.getUpdatedAt());
+        originalReport.setFavorite(report.isFavorite());
 
+        reportRepository.save(originalReport);
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(int id) {
     }
 
     public ResponseEntity<?> processCsv(MultipartFile file) {
@@ -80,17 +86,70 @@ public class ReportService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка обработки JSON файла.");
         }
     }
-
+//
 //    public ResponseEntity<?> exportToPPTX(Report report) {
+//        try {
+//            XMLSlideShow ppt = new XMLSlideShow();
+//            ppt.createSlide();
+//            XSLFSlideMaster defaultMaster = ppt.getSlideMasters().get(0);
+//            XSLFSlideLayout layout = defaultMaster.getLayout(SlideLayout.TITLE_AND_CONTENT);
+//            XSLFSlide slide = ppt.createSlide(layout);
+//            XSLFTextShape titleShape = slide.getPlaceholder(0);
+//            XSLFTextShape contentShape = slide.getPlaceholder(1);
 //
+//            XSLFTextBox shape = slide.createTextBox();
+//            XSLFTextParagraph p = shape.addNewTextParagraph();
+//            XSLFTextRun r = p.addNewTextRun();
+//            r.setText(report.getName());
+//            r.setFontColor(Color.blue);
+//            r.setFontSize(24.);
+//
+//            FileOutputStream out = new FileOutputStream(report.getName()+".pptx");
+//            ppt.write(out);
+//            out.close();
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);        }
 //    }
-//
+
 //    public ResponseEntity<?> exportToPDF(Report report) {
+//        try {
+//            PDDocument document = new PDDocument();
+//            PDPage page = new PDPage();
+//            document.addPage(page);
 //
+//            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+//
+//            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 12);
+//            contentStream.beginText();
+//            contentStream.showText(report.getName());
+//            contentStream.showText(String.valueOf(report.getStatus()));
+//            contentStream.endText();
+//            contentStream.close();
+//
+//            document.save(report.getName()+".pdf");
+//            document.close();
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
 //    }
-//
+
 //    public ResponseEntity<?> exportToDOCX(Report report) {
-//
+//        try {
+//            WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
+//            MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
+//            mainDocumentPart.addStyledParagraphOfText(report.getName(), String.valueOf(report.getStatus()));
+//            mainDocumentPart.addParagraphOfText(String.valueOf(report.getCreatedAt()));
+//            File exportFile = new File(report.getName()+".docx");
+//            wordPackage.save(exportFile);
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
 //    }
 
 }

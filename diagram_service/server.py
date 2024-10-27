@@ -3,54 +3,44 @@ import matplotlib.pyplot as plt
 from pydantic import BaseModel
 import numpy as np
 
-class DataForCreatingDiagram(BaseModel):
-    id: int
-    title: str
+import json
 
-class DataForCreatingCircleDiagram(DataForCreatingDiagram):
-    sizes: list[int]
-    labels: list[str]
-
-class DataForCreatingBarDiagram(DataForCreatingDiagram):
-    labels: list[str]
-    counts: list[int]
-
-class DataForCreatingLineDiagram(DataForCreatingDiagram):
-    x_array: np.array[int]
-    y_array: np.array[int]
-    x_title: str
-    y_title: str
+class MainPostClass(BaseModel):
+    json_data: str
+    critery: str
+    diagram_type: str
 
 app = FastAPI()
 
 @app.post("/")
-def get_diagram_image(data: DataForCreatingDiagram):
-    match type(data):
-        case DataForCreatingCircleDiagram:
-            generate_circle_diagram(data)
+def create_diagram(json_data, critery, diagram_type):
+    data = json.load(json_data)
 
-        case DataForCreatingBarDiagram:
-            generate_bar_diagram(data)
+    diagram_data = list()
 
-        case DataForCreatingLineDiagram:
-            generate_line_diagram(data)
+    for report in data:
+        for k, v in report:
+            if k==critery:
+                diagram_data.append(v)
 
-    return {"filename": f"{str(data.id)}.png"}
+    if diagram_type=="pie":
+        generate_circle_diagram()
 
-def generate_circle_diagram(data: DataForCreatingCircleDiagram):
+def generate_circle_diagram(title, labels, sizes):
+    
     fig, ax = plt.subplots()
-    ax.pie(data.sizes, labels=data.labels)
-    plt.title(data.title)
+    ax.pie(sizes, labels=labels)
+    plt.title(title)
     plt.savefig(f"{str(data.id)}.png")
 
-def generate_bar_diagram(data: DataForCreatingBarDiagram):
-    plt.bar(data.labels, data.counts)
-    plt.title(data.title)
+def generate_bar_diagram(title, labels, sizes):
+    plt.bar(labels, sizes)
+    plt.title(title)
     plt.savefig(f"{str(data.id)}.png")
 
-def generate_line_diagram(data):
-    plt.plot(data.x_array, data.y_array)
-    plt.xlabel(data.x_title)
-    plt.ylabel(data.y_title)
-    plt.title(data.title)
+def generate_line_diagram(title, x_array, y_array, x_title, y_title):
+    plt.plot(x_array, y_array)
+    plt.xlabel(x_title)
+    plt.ylabel(y_title)
+    plt.title(title)
     plt.savefig(f"{str(data.id)}.png")
