@@ -5,34 +5,14 @@ import numpy as np
 
 import json
 
-class Report(BaseModel):
-    id: int
-    name: str
-    status: str
-    createdAt: str
-    updatedAt: str
-
-class DataForCreatingDiagram(BaseModel):
-    id: int
-    title: str
-
-class DataForCreatingCircleDiagram(DataForCreatingDiagram):
-    sizes: list[int]
-    labels: list[str]
-
-class DataForCreatingBarDiagram(DataForCreatingDiagram):
-    labels: list[str]
-    counts: list[int]
-
-class DataForCreatingLineDiagram(DataForCreatingDiagram):
-    x_array: np.array[int]
-    y_array: np.array[int]
-    x_title: str
-    y_title: str
+class MainPostClass(BaseModel):
+    json_data: str
+    critery: str
+    diagram_type: str
 
 app = FastAPI()
 
-@app.post("/{}")
+@app.post("/")
 def create_diagram(json_data, critery, diagram_type):
     data = json.load(json_data)
 

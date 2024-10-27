@@ -4,6 +4,14 @@ package ru.mixail.backend.services;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import org.apache.poi.xslf.usermodel.*;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,9 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.mixail.backend.models.Report;
 import ru.mixail.backend.repositories.ReportRepository;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.awt.*;
+import java.io.*;
+import java.util.List;
 import java.util.*;
 
 @Service
@@ -88,15 +96,68 @@ public class ReportService {
     }
 
     public ResponseEntity<?> exportToPPTX(Report report) {
-        return null;
+        try {
+            XMLSlideShow ppt = new XMLSlideShow();
+            ppt.createSlide();
+            XSLFSlideMaster defaultMaster = ppt.getSlideMasters().get(0);
+            XSLFSlideLayout layout = defaultMaster.getLayout(SlideLayout.TITLE_AND_CONTENT);
+            XSLFSlide slide = ppt.createSlide(layout);
+            XSLFTextShape titleShape = slide.getPlaceholder(0);
+            XSLFTextShape contentShape = slide.getPlaceholder(1);
+
+            XSLFTextBox shape = slide.createTextBox();
+            XSLFTextParagraph p = shape.addNewTextParagraph();
+            XSLFTextRun r = p.addNewTextRun();
+            r.setText(report.getName());
+            r.setFontColor(Color.blue);
+            r.setFontSize(24.);
+
+            FileOutputStream out = new FileOutputStream(report.getName()+".pptx");
+            ppt.write(out);
+            out.close();
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);        }
     }
 
     public ResponseEntity<?> exportToPDF(Report report) {
-        return null;
+        try {
+            PDDocument document = new PDDocument();
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 12);
+            contentStream.beginText();
+            contentStream.showText(report.getName());
+            contentStream.showText(String.valueOf(report.getStatus()));
+            contentStream.endText();
+            contentStream.close();
+
+            document.save(report.getName()+".pdf");
+            document.close();
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<?> exportToDOCX(Report report) {
-        return null;
+        try {
+            WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
+            MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
+            mainDocumentPart.addStyledParagraphOfText(report.getName(), String.valueOf(report.getStatus()));
+            mainDocumentPart.addParagraphOfText(String.valueOf(report.getCreatedAt()));
+            File exportFile = new File(report.getName()+".docx");
+            wordPackage.save(exportFile);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
