@@ -88,15 +88,15 @@ public class ReportService {
     }
 
     public ResponseEntity<?> exportToPPTX(Report report) {
-
+        return null;
     }
 
     public ResponseEntity<?> exportToPDF(Report report) {
-
+        return null;
     }
 
     public ResponseEntity<?> exportToDOCX(Report report) {
-
+        return null;
     }
 
 }
