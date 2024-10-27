@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataCraft Report Builder</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #e9eef2;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background: #1e8ec1;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .container {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 900px;
+            margin: 20px auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #1e8ec1;
+            margin-bottom: 15px;
+        }
+        .upload-section, .chart-section, .pagination {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="file"] {
+            padding: 5px;
+            background: #1e8ec1;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #3498db;
+            color: #ffffff;
+        }
+        .action-buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .pagination button {
+            background-color: #1e8ec1;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #167da1;
+        }
+        .chart-canvas, .text-box {
+            margin-top: 20px;
+        }
+        .text-box {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+            margin-bottom: 15px;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <h1>IT TSU</h1>
+    <div>Создание отчёта</div>
+</header>
+<div class="container">
+    <h2>Создание отчёта</h2>
+    <div class="upload-section">
+        <label for="file-input">Загрузить таблицу (CSV или JSON):</label>
+        <input type="file" id="file-input" accept=".csv, .json" onchange="sendToBack()">
+    </div>
+    <table id="data-table">
+        <thead>
+        <tr></tr>
+        </thead>
+        <tbody>
+        <tr></tr>
+        </tbody>
+    </table>
+    <div class="action-buttons">
+        <button onclick="addRow()">Добавить строку</button>
+        <button onclick="addColumn()">Добавить столбец</button>
+    </div>
+    <div class="chart-section">
+        <button onclick="insertBarChart()">Вставить столбчатую диаграмму</button>
+        <button onclick="insertHistogram()">Вставить гистограмму</button>
+        <button onclick="insertPieChart()">Вставить круговую диаграмму</button>
+        <button onclick="addTextBox()">Добавить текстовый блок</button>
+    </div>
+    <div id="chart-container"></div>
+    <div class="pagination">
+        <button onclick="prevPage()">Предыдущая</button>
+        <span id="page-info"></span>
+        <button onclick="nextPage()">Следующая</button>
+    </div>
+</div>
+
+<script>
+    let tableData = [];
+    let currentPage = 1;
+    const rowsPerPage = 5;
+
+    function sendToBack(){
+        var fileInput = document.getElementById('file-input');
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        fetch("http://localhost:8080/api/upload", {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+            throw new Error('Ошибка при отправке файла');
+            }
+            return response.json();
+        })
+        .then(data => {
+            loadTableFromJSON(data);
+            // Здесь вы можете добавить логику обработки полученных данных
+        })
+        .catch(error => {
+            console.error('Произошла ошибка:', error);
+        });
+
+    }
+
+    function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const content = event.target.result;
+            if (file.name.endsWith('.json')) {
+                try {
+                    const jsonData = JSON.parse(content);
+                    loadTableFromJSON(jsonData);
+                } catch (error) {
+                    alert('Ошибка чтения JSON: ' + error.message);
+                }
+            } else if (file.name.endsWith('.csv')) {
+                loadTableFromCSV(content);
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function loadTableFromJSON(data) {
+        if (!Array.isArray(data) || data.length === 0) {
+            alert('Неверный формат JSON.');
+            return;
+        }
+
+        tableData = data;
+        const headers = Object.keys(data[0]);
+        createTableHeaders(headers);
+        renderTable();
+    }
+
+    function loadTableFromCSV(data) {
+        const rows = data.split('\n').map(row => row.split(','));
+        const headers = rows[0];
+        createTableHeaders(headers);
+
+        tableData = rows.slice(1).map(row => {
+            const obj = {};
+            headers.forEach((header, index) => {
+                obj[header] = row[index] || '';
+            });
+            return obj;
+        });
+
+        renderTable();
+    }
+
+    function createTableHeaders(headers) {
+        const thead = document.querySelector('#data-table thead tr');
+        thead.innerHTML = '';
+        headers.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            thead.appendChild(th);
+        });
+    }
+
+    function renderTable() {
+        const tbody = document.querySelector('#data-table tbody');
+        tbody.innerHTML = '';
+
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const pageData = tableData.slice(start, end);
+
+        pageData.forEach(row => {
+            const tr = document.createElement('tr');
+            Object.values(row).forEach(value => {
+                const td = document.createElement('td');
+                td.contentEditable = true;
+                td.textContent = value;
+                tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('page-info').textContent = `Страница ${currentPage} из ${Math.ceil(tableData.length / rowsPerPage)}`;
+    }
+
+    function addRow() {
+        const newRow = {};
+        const headers = Array.from(document.querySelectorAll('#data-table thead th'));
+        headers.forEach(header => {
+            newRow[header.textContent] = '';
+        });
+        tableData.push(newRow);
+        renderTable();
+    }
+
+    function addColumn() {
+        const headers = Array.from(document.querySelectorAll('#data-table thead th'));
+        const newHeader = `Столбец ${headers.length + 1}`;
+        headers.push(newHeader);
+        tableData.forEach(row => {
+            row[newHeader] = '';
+        });
+        createTableHeaders(headers.map(h => h.textContent));
+        renderTable();
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    }
+
+    function nextPage() {
+        if (currentPage * rowsPerPage < tableData.length) {
+            currentPage++;
+            renderTable();
+        }
+    }
+
+    function insertBarChart() {
+        renderChart('bar');
+    }
+
+    function insertHistogram() {
+        renderChart('histogram');
+    }
+
+    function insertPieChart() {
+        renderChart('pie');
+    }
+
+    function addTextBox() {
+        const textBox = document.createElement('div');
+        textBox.className = 'text-box';
+        textBox.contentEditable = true;
+        textBox.textContent = 'Введите текст...';
+        document.getElementById('chart-container').appendChild(textBox);
+    }
+
+    function renderChart(type) {
+        const headers = Array.from(document.querySelectorAll('#data-table thead th')).map(th => th.textContent);
+        if (headers.length < 2) {
+            alert('Для построения диаграммы требуется минимум два столбца.');
+            return;
+        }
+
+        const labels = tableData.map(row => row[headers[0]]);
+        const data = tableData.map(row => parseFloat(row[headers[1]]) || 0);
+
+        const canvas = document.createElement('canvas');
+        canvas.className = 'chart-canvas';
+        document.getElementById('chart-container').appendChild(canvas);
+
+        new Chart(canvas, {
+            type: type === 'histogram' ? 'bar' : type,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: headers[1],
+                    data: data,
+                    backgroundColor: 'rgba(30, 142, 193, 0.7)',
+                    borderColor: 'rgba(30, 142, 193, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
