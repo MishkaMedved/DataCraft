@@ -1,4 +1,4 @@
-FROM maven:latest AS builder
+FROM maven:3.8.5-openjdk-17 AS builder
 WORKDIR /application
 COPY . .
 RUN --mount=type=cache,target=/root/.m2  mvn clean install -Dmaven.test.skip

@@ -1,24 +1,23 @@
 services:
   mysql:
-    image: mysql:8.4.0
+    image: mysql:8.0
     restart: "no"
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./db/init.sql:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: mysql_secret
       MYSQL_USER: mysql_user
       MYSQL_PASSWORD: mysql_secret
-      MYSQL_DATABASE: mydb
+      MYSQL_DATABASE: localhost:3307
     healthcheck:
       test: mysqladmin ping -u root -p $$MYSQL_ROOT_PASSWORD
       interval: 10s
       timeout: 5s
       start_period: 10s
       retries: 5
-  backend:
+  spring-backend:
     image: backend:latest
     build:
       context: .
