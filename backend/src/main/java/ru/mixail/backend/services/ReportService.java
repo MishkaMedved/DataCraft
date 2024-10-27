@@ -86,6 +86,10 @@ public class ReportService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка обработки JSON файла.");
         }
     }
+
+    public List<Report> findByName(String name) {
+        return reportRepository.findByNameContainingIgnoreCase(name);
+    }
 //
 //    public ResponseEntity<?> exportToPPTX(Report report) {
 //        try {

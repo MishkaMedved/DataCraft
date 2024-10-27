@@ -22,6 +22,14 @@ public class MainController {
         return reportService.findAll();
     }
 
+    @GetMapping("reports")
+    public List<Report> getReports(@RequestParam(value = "name", required = false) String name) {
+        if (name != null && !name.isEmpty()) {
+            return reportService.findByName(name);
+        }
+        return reportService.findAll();
+    }
+
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         String fileType = file.getContentType();
