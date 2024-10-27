@@ -15,7 +15,9 @@ import ru.mixail.backend.repositories.ReportRepository;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -87,8 +89,13 @@ public class ReportService {
         }
     }
 
-    public List<Report> findByName(String name) {
-        return reportRepository.findByNameContainingIgnoreCase(name);
+    public List<Report> filterReports(String name, String createdAfter, String updatedAfter) {
+        // Пример фильтрации, можно добавить дополнительные проверки
+        return reportRepository.findAll().stream()
+                .filter(report -> (name == null || report.getName().contains(name)))
+                .filter(report -> (createdAfter == null || report.getCreatedAt().isAfter(LocalDateTime.parse(createdAfter))))
+                .filter(report -> (updatedAfter == null || report.getUpdatedAt().isAfter(LocalDateTime.parse(updatedAfter))))
+                .collect(Collectors.toList());
     }
 //
 //    public ResponseEntity<?> exportToPPTX(Report report) {

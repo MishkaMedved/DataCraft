@@ -22,12 +22,14 @@ public class MainController {
         return reportService.findAll();
     }
 
-    @GetMapping("reports")
-    public List<Report> getReports(@RequestParam(value = "name", required = false) String name) {
-        if (name != null && !name.isEmpty()) {
-            return reportService.findByName(name);
-        }
-        return reportService.findAll();
+    @GetMapping("/reports/filter")
+    public ResponseEntity<List<Report>> filterReports(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "createdAfter", required = false) String createdAfter,
+            @RequestParam(value = "updatedAfter", required = false) String updatedAfter
+    ) {
+        List<Report> filteredReports = reportService.filterReports(name, createdAfter, updatedAfter);
+        return ResponseEntity.ok(filteredReports);
     }
 
     @PostMapping("/upload")
