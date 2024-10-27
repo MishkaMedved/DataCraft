@@ -69,6 +69,11 @@
             <artifactId>spring-restdocs-mockmvc</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.amplicode</groupId>
+            <artifactId>react-admin-utils-starter</artifactId>
+            <version>0.2.0</version>
+        </dependency>
     </dependencies>
 
     <build>

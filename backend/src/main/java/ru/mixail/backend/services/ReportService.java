@@ -50,7 +50,7 @@ public class ReportService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(int id) {
     }
 
     public ResponseEntity<?> processCsv(MultipartFile file) {
