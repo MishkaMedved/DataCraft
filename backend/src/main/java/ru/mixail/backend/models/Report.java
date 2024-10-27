@@ -2,18 +2,18 @@ package ru.mixail.backend.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
 import ru.mixail.backend.enums.StatusEnum;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Table(name = "report")
 @AllArgsConstructor
 @NoArgsConstructor
 @RequiredArgsConstructor
-@Data
+@Getter
+@Setter
+@ToString
 public class Report {
     @Id
     @Column(name = "id")
