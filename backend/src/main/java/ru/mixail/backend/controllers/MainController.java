@@ -76,27 +76,27 @@ public class MainController {
         }
     }
 
-    @GetMapping("/reports/export/{id}")
-    public ResponseEntity<?> exportReport(@PathVariable Integer id, @RequestParam("format") String format) {
-        try {
-            Report report = reportService.findOne(id);
-            if (report == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Отчет не найден");
-            }
-
-            switch (format.toLowerCase()) {
-                case "pptx":
-                    return reportService.exportToPPTX(report);
-                case "pdf":
-                    return reportService.exportToPDF(report);
-                case "docx":
-                    return reportService.exportToDOCX(report);
-                default:
-                    return ResponseEntity.badRequest().body("Неподдерживаемый формат экспорта");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка экспорта отчета");
-        }
-    }
+//    @GetMapping("/reports/export/{id}")
+//    public ResponseEntity<?> exportReport(@PathVariable Integer id, @RequestParam("format") String format) {
+//        try {
+//            Report report = reportService.findOne(id);
+//            if (report == null) {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Отчет не найден");
+//            }
+//
+//            switch (format.toLowerCase()) {
+//                case "pptx":
+//                    return reportService.exportToPPTX(report);
+//                case "pdf":
+//                    return reportService.exportToPDF(report);
+//                case "docx":
+//                    return reportService.exportToDOCX(report);
+//                default:
+//                    return ResponseEntity.badRequest().body("Неподдерживаемый формат экспорта");
+//            }
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка экспорта отчета");
+//        }
+//    }
 }
 

@@ -74,44 +74,44 @@
             <artifactId>react-admin-utils-starter</artifactId>
             <version>0.2.0</version>
         </dependency>
-        <!--зависисмости для экспорта в pptx-->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>5.2.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.2.5</version>
-        </dependency>
-        <!--зависисмости для экспорта в pdf-->
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itextpdf</artifactId>
-            <version>5.5.13.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk18on</artifactId>
-            <version>1.76</version>
-        </dependency>
-        <!--зависисмости для экспорта в docx-->
-        <dependency>
-            <groupId>org.docx4j</groupId>
-            <artifactId>docx4j</artifactId>
-            <version>6.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.1</version>
-        </dependency>
+<!--        &lt;!&ndash;зависисмости для экспорта в pptx&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi</artifactId>-->
+<!--            <version>5.2.5</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi-ooxml</artifactId>-->
+<!--            <version>5.2.5</version>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash;зависисмости для экспорта в pdf&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>itextpdf</artifactId>-->
+<!--            <version>5.5.13.3</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.pdfbox</groupId>-->
+<!--            <artifactId>pdfbox</artifactId>-->
+<!--            <version>3.0.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.bouncycastle</groupId>-->
+<!--            <artifactId>bcpkix-jdk18on</artifactId>-->
+<!--            <version>1.76</version>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash;зависисмости для экспорта в docx&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.docx4j</groupId>-->
+<!--            <artifactId>docx4j</artifactId>-->
+<!--            <version>6.1.2</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.glassfish.jaxb</groupId>-->
+<!--            <artifactId>jaxb-runtime</artifactId>-->
+<!--            <version>2.3.1</version>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
