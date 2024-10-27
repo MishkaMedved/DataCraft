@@ -22,23 +22,13 @@ public class MainController {
         return reportService.findAll();
     }
 
-    @GetMapping("reports/{id}")
-    public ResponseEntity<?> getReportById(@PathVariable Integer id) {
-        Report report = reportService.findOne(id);
-        if (report != null) {
-            return ResponseEntity.ok(report);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Отчет не найден");
-        }
-    }
-
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         String fileType = file.getContentType();
 
-        if ("text/csv".equals(fileType)) {
+        if (fileType.equals("text/csv")) {
             return reportService.processCsv(file);
-        } else if ("application/json".equals(fileType)) {
+        } else if (fileType.equals("application/json")) {
             return reportService.processJson(file);
         } else {
             return ResponseEntity.badRequest().body("Неподдерживаемый формат файла. Пожалуйста, загрузите CSV или JSON.");
@@ -49,54 +39,46 @@ public class MainController {
     public ResponseEntity<?> addReport(@RequestBody Report report) {
         try {
             reportService.save(report);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Отчет успешно создан");
-        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка сохранения отчета");
         }
     }
 
     @PutMapping("/reports/{id}")
     public ResponseEntity<?> updateReport(@RequestBody Report report, @PathVariable Integer id) {
-        try {
-            report.setId(id); // Установить ID для обновляемого отчета
+        try{
             reportService.update(report);
-            return ResponseEntity.ok("Отчет успешно обновлен");
-        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка изменения отчета");
         }
     }
 
     @DeleteMapping("/reports/{id}")
-    public ResponseEntity<?> deleteReport(@PathVariable Integer id) {
-        try {
+    public ResponseEntity<?> deleteReport(@PathVariable int id) {
+        try{
             reportService.delete(id);
-            return ResponseEntity.ok("Отчет успешно удален");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка удаления отчета");
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка изменения отчета");
         }
     }
 
-//    @GetMapping("/reports/export/{id}")
-//    public ResponseEntity<?> exportReport(@PathVariable Integer id, @RequestParam("format") String format) {
+//    @GetMapping("/reports/exports")
+//    public ResponseEntity<?> exportReports(@PathVariable Integer id, @RequestParam("format") String format) {
 //        try {
-//            Report report = reportService.findOne(id);
-//            if (report == null) {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Отчет не найден");
+//            if (format.equals("pptx")) {
+//                return reportService.exportToPPTX(reportService.findOne(id));
+//            } else if (format.equals("pdf")) {
+//                return reportService.exportToPDF(reportService.findOne(id));
+//            } else if (format.equals("docx")) {
+//                return reportService.exportToDOCX(reportService.findOne(id));
+//            } else {
+//                return ResponseEntity.badRequest().body("Неподдерживаемый формат экспорта");
 //            }
-//
-//            switch (format.toLowerCase()) {
-//                case "pptx":
-//                    return reportService.exportToPPTX(report);
-//                case "pdf":
-//                    return reportService.exportToPDF(report);
-//                case "docx":
-//                    return reportService.exportToDOCX(report);
-//                default:
-//                    return ResponseEntity.badRequest().body("Неподдерживаемый формат экспорта");
-//            }
-//        } catch (Exception e) {
+//        } catch (Exception e){
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка экспорта отчета");
 //        }
 //    }
 }
-
